@@ -149,6 +149,12 @@ func (t *Tracker) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
 		params.Set("cc", value)
 	}
 
+	// Set the "User Language" value.
+	// See: https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#ul
+	if value := request.Header.Get("Accept-Language"); value != "" {
+		params.Set("ul", value)
+	}
+
 	// Build the Google Analytics collection url.
 	// See: https://developers.google.com/analytics/devguides/collection/protocol/v1/reference#endpoint
 	googleAnalytics := url.URL{
