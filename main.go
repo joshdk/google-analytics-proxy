@@ -11,6 +11,8 @@ import (
 	"net/http/httputil"
 	"net/url"
 	"os"
+
+	"github.com/joshdk/google-analytics-proxy/analytics"
 )
 
 func main() {
@@ -32,9 +34,23 @@ func mainCmd() error {
 	var upstreamEndpoint = os.Getenv("UPSTREAM_ENDPOINT")
 
 	// upstreamHostname optionally is the hostname to used when proxying
-	// requests to the upstream. Used for hostname based routing.
+	// requests to the upstream. Used for hostname based routing. If empty, the
+	// value of $GOOGLE_ANALYTICS_PROPERTY_NAME will be used.
 	// Example: "example.com"
 	var upstreamHostname = os.Getenv("UPSTREAM_HOSTNAME")
+
+	// googleAnalyticsTrackingID is the tracking id for the Google
+	// Analytics property that you want to track pageview events for. This
+	// can be found in your Google Analytics dashboard.
+	// Example: "UA-123456789-1"
+	var googleAnalyticsTrackingID = os.Getenv("GOOGLE_ANALYTICS_TRACKING_ID")
+
+	// googleAnalyticsPropertyName is the name for the Google Analytics
+	// property that you want to track pageview events for. This can be
+	// found in your Google Analytics dashboard. Will be used as the upstream
+	// hostname in proxied requests if $UPSTREAM_HOSTNAME is empty.
+	// Example: "example.com"
+	var googleAnalyticsPropertyName = os.Getenv("GOOGLE_ANALYTICS_PROPERTY_NAME")
 
 	// Parse the upstream endpoint address to ensure that it's valid.
 	upstreamURL, err := url.Parse(upstreamEndpoint)
@@ -58,7 +74,15 @@ func mainCmd() error {
 		original(request)
 	}
 
+	// Create a tracker for sending pageviews to Google Analytics.
+	log.Printf("tracking analytics for %s (%s)", googleAnalyticsTrackingID, googleAnalyticsPropertyName)
+	tracker := &analytics.Tracker{
+		TrackingID:   googleAnalyticsTrackingID,
+		PropertyName: googleAnalyticsPropertyName,
+		Handler:      proxy,
+	}
+
 	// Start the server and listen for incoming requests!
 	log.Printf("listening on %s", listenAddress)
-	return http.ListenAndServe(listenAddress, proxy)
+	return http.ListenAndServe(listenAddress, tracker)
 }
