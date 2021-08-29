@@ -119,6 +119,36 @@ func (t *Tracker) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
 		params.Set("dr", value)
 	}
 
+	// Set the "Campaign Name" value.
+	// See: https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#cn
+	if value := request.URL.Query().Get("utm_campaign"); value != "" {
+		params.Set("cn", value)
+	}
+
+	// Set the "Campaign Source" value.
+	// See: https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#cs
+	if value := request.URL.Query().Get("utm_source"); value != "" {
+		params.Set("cs", value)
+	}
+
+	// Set the "Campaign Medium" value.
+	// See: https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#cm
+	if value := request.URL.Query().Get("utm_medium"); value != "" {
+		params.Set("cm", value)
+	}
+
+	// Set the "Campaign Keyword" value.
+	// See: https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#ck
+	if value := request.URL.Query().Get("utm_term"); value != "" {
+		params.Set("ck", value)
+	}
+
+	// Set the "Campaign Content" value.
+	// See: https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#cc
+	if value := request.URL.Query().Get("utm_content"); value != "" {
+		params.Set("cc", value)
+	}
+
 	// Build the Google Analytics collection url.
 	// See: https://developers.google.com/analytics/devguides/collection/protocol/v1/reference#endpoint
 	googleAnalytics := url.URL{
