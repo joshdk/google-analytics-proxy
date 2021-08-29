@@ -7,6 +7,7 @@ package analytics
 import (
 	"io"
 	"log"
+	"net"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -63,37 +64,59 @@ func (t *Tracker) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
 	// These values are used to accurately track the pageview event.
 	// See: https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters
 	params := url.Values{
-		// Set "Protocol Version".
+		// Set the "Protocol Version" value.
 		// See: https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#v
 		"v": {"1"},
 
-		// Set "Tracking ID/ Web Property ID".
+		// Set the "Tracking ID/ Web Property ID" value.
 		// See: https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#tid
 		"tid": {t.TrackingID},
 
-		// Set "Client ID".
+		// Set the "Data Source" value.
+		// See: https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#ds
+		"ds": {"joshdk/google-analytics-proxy"},
+
+		// Set the "Client ID" value.
 		// See: https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#cid
 		"cid": {uuid.Must(uuid.NewV4()).String()},
 
-		// Set "User Agent Override".
+		// Set the "User Agent Override" value.
 		// See: https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#ua
 		"ua": {request.UserAgent()},
 
-		// Set "Hit type".
+		// Set the "Hit type" value.
 		// See: https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#t
 		"t": {"pageview"},
 
-		// Set "Non-Interaction Hit".
+		// Set the "Non-Interaction Hit" value.
 		// See: https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#ni
 		"ni": {"1"},
 
-		// Set "Document Host Name".
+		// Set the "Document Host Name" value.
 		// See: https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#dh
 		"dh": {t.PropertyName},
 
-		// Set "Document Path".
+		// Set the "Document Path" value.
 		// See: https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#dp
 		"dp": {request.URL.RequestURI()},
+	}
+
+	// Set the "IP Override" value.
+	// Use the  IP address given by the "X-Forwarded-For" header, if present.
+	// Fallback to using the IP address of the client connection itself, which
+	// may be inaccurate (or in a private address range) depending on your
+	// networking configuration.
+	//See: https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#uip
+	if value := request.Header.Get("X-Forwarded-For"); value != "" {
+		params.Set("uip", value)
+	} else if value, _, err := net.SplitHostPort(request.RemoteAddr); err == nil {
+		params.Set("uip", value)
+	}
+
+	// Set the "Document Referrer" value.
+	// See: https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#dr
+	if value := request.Referer(); value != "" {
+		params.Set("dr", value)
 	}
 
 	// Build the Google Analytics collection url.
