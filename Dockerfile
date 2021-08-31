@@ -35,8 +35,29 @@ RUN upx --best --ultra-brute /bin/google-analytics-proxy
 # The final build stage copies in the final binary.
 FROM scratch
 
+ARG CREATED
+ARG REVISION
+ARG VERSION
+
+# Standard OCI image labels.
+# See: https://github.com/opencontainers/image-spec/blob/v1.0.1/annotations.md#pre-defined-annotation-keys
+LABEL org.opencontainers.image.created="$CREATED"
+LABEL org.opencontainers.image.authors="Josh Komoroske <github.com/joshdk>"
+LABEL org.opencontainers.image.url="https://github.com/joshdk/google-analytics-proxy"
+LABEL org.opencontainers.image.documentation="https://github.com/joshdk/google-analytics-proxy/blob/master/README.md"
+LABEL org.opencontainers.image.source="https://github.com/joshdk/google-analytics-proxy"
+LABEL org.opencontainers.image.version="$VERSION"
+LABEL org.opencontainers.image.revision="$REVISION"
+LABEL org.opencontainers.image.vendor="Josh Komoroske <github.com/joshdk>"
+LABEL org.opencontainers.image.licenses="MIT"
+LABEL org.opencontainers.image.ref.name="ghcr.io/joshdk/google-analytics-proxy:$VERSION"
+LABEL org.opencontainers.image.title="Google Analytics Proxy"
+LABEL org.opencontainers.image.description="📊 Transparent proxy for tracking page views with Google Analytics"
+
 COPY --from=certs /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=upx /bin/google-analytics-proxy /bin/google-analytics-proxy
+COPY LICENSE.txt /LICENSE.txt
+COPY README.md /README.md
 
 # Switch to a non-root user. Arbitrarily, use the same uid/gid as the "nobody"
 # user from Alpine.

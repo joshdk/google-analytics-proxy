@@ -26,7 +26,9 @@ jobs:
           image_label="pr$(echo "$GITHUB_REF" | cut -d/ -f3)"
 
           docker build \
-            --build-arg "VERSION=$image_label" \
+            --build-arg CREATED="$(date -u +'%Y-%m-%dT%H:%M:%SZ')" \
+            --build-arg REVISION="$(git rev-parse HEAD)" \
+            --build-arg VERSION="$image_label" \
             --tag "$image_name:$image_label" \
             .
 
