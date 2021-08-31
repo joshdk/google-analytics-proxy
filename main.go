@@ -11,6 +11,7 @@ import (
 	"net/http/httputil"
 	"net/url"
 	"os"
+	"strconv"
 
 	"github.com/joshdk/google-analytics-proxy/analytics"
 )
@@ -58,6 +59,12 @@ func mainCmd() error {
 	// Example: "example.com"
 	var googleAnalyticsPropertyName = os.Getenv("GOOGLE_ANALYTICS_PROPERTY_NAME")
 
+	// googleAnalyticsDryRun can optionally be used to disable reporting
+	// pageview events with Google Analytics. See strconv.ParseBool() for
+	// acceptable values.
+	// Example: "true"
+	var googleAnalyticsDryRun = os.Getenv("GOOGLE_ANALYTICS_DRY_RUN")
+
 	// Parse the upstream endpoint address to ensure that it's valid.
 	upstreamURL, err := url.Parse(upstreamEndpoint)
 	if err != nil {
@@ -80,11 +87,20 @@ func mainCmd() error {
 		original(request)
 	}
 
+	// Parse the Google Analytics dry run value. Intentionally ignore all
+	// errors and default to false.
+	googleAnalyticsDryRunBool, _ := strconv.ParseBool(googleAnalyticsDryRun)
+
 	// Create a tracker for sending pageviews to Google Analytics.
-	log.Printf("tracking analytics for %s (%s)", googleAnalyticsTrackingID, googleAnalyticsPropertyName)
+	if !googleAnalyticsDryRunBool {
+		log.Printf("tracking analytics for %s (%s)", googleAnalyticsTrackingID, googleAnalyticsPropertyName)
+	} else {
+		log.Printf("skipping analytics for %s (%s)", googleAnalyticsTrackingID, googleAnalyticsPropertyName)
+	}
 	tracker := &analytics.Tracker{
 		TrackingID:   googleAnalyticsTrackingID,
 		PropertyName: googleAnalyticsPropertyName,
+		DryRun:       googleAnalyticsDryRunBool,
 		Handler:      proxy,
 	}
 
