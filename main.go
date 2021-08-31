@@ -15,6 +15,10 @@ import (
 	"github.com/joshdk/google-analytics-proxy/analytics"
 )
 
+// version is used to hold the version string. Is replaced at go build time
+// with -ldflags.
+var version = "development"
+
 func main() {
 	if err := mainCmd(); err != nil {
 		fmt.Printf("google-analytics-proxy: %v", err)
@@ -23,6 +27,8 @@ func main() {
 }
 
 func mainCmd() error {
+	log.Printf("joshdk/google-analytics-proxy version %s", version)
+
 	// listenAddress is the host and port that the proxy will listen on.
 	// See net.Dial for details of the address format.
 	// Example: "localhost:8080" "0.0.0.0:8080" ":8080"

@@ -25,5 +25,9 @@ jobs:
           image_name=ghcr.io/joshdk/google-analytics-proxy
           image_label="pr$(echo "$GITHUB_REF" | cut -d/ -f3)"
 
-          docker build -t "$image_name:$image_label" .
+          docker build \
+            --build-arg "VERSION=$image_label" \
+            --tag "$image_name:$image_label" \
+            .
+
           docker push "$image_name:$image_label"
