@@ -11,8 +11,6 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"net/url"
-
-	"github.com/gofrs/uuid"
 )
 
 // Compile-time assertion that Tracker implements http.Handler.
@@ -76,10 +74,6 @@ func (t *Tracker) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
 		// See: https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#ds
 		"ds": {"joshdk/google-analytics-proxy"},
 
-		// Set the "Client ID" value.
-		// See: https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#cid
-		"cid": {uuid.Must(uuid.NewV4()).String()},
-
 		// Set the "User Agent Override" value.
 		// See: https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#ua
 		"ua": {request.UserAgent()},
@@ -99,6 +93,17 @@ func (t *Tracker) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
 		// Set the "Document Path" value.
 		// See: https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#dp
 		"dp": {request.URL.RequestURI()},
+	}
+
+	// Set the "Client ID" value.
+	// See: https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#cid
+	// Additionally, persist the returned cookie back to the client so that it
+	// will be passed back during subsequent requests.
+	if value, cookie := getCookie(request, "_gap"); cookie == nil {
+		params.Set("cid", value)
+	} else {
+		params.Set("cid", value)
+		defer http.SetCookie(writer, cookie)
 	}
 
 	// Set the "IP Override" value.
