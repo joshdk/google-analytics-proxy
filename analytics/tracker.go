@@ -155,6 +155,12 @@ func (t *Tracker) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
 		params.Set("ul", value)
 	}
 
+	// Set the "Document Title" value.
+	// See: https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#dt
+	if value, _ := getTitle(recorder); value != "" {
+		params.Set("dt", value)
+	}
+
 	// Build the Google Analytics collection url.
 	// See: https://developers.google.com/analytics/devguides/collection/protocol/v1/reference#endpoint
 	googleAnalytics := url.URL{
