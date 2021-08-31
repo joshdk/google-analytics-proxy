@@ -16,13 +16,26 @@ COPY . .
 
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build \
     -o /bin/google-analytics-proxy \
-    -ldflags "-X main.version=$VERSION" \
+    -ldflags "-s -w -X main.version=$VERSION" \
+    -trimpath \
     main.go
+
+# The upx build stage uses upx to compress the binary.
+FROM alpine:3.14 as upx
+
+RUN wget https://github.com/upx/upx/releases/download/v3.96/upx-3.96-amd64_linux.tar.xz \
+ && tar -xf upx-3.96-amd64_linux.tar.xz \
+ && install upx-3.96-amd64_linux/upx /bin/upx \
+ && rm -rf upx*
+
+COPY --from=builder /bin/google-analytics-proxy /bin/google-analytics-proxy
+
+RUN upx --best --ultra-brute /bin/google-analytics-proxy
 
 # The final build stage copies in the final binary.
 FROM scratch
 
 COPY --from=certs /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-COPY --from=builder /bin/google-analytics-proxy /bin/google-analytics-proxy
+COPY --from=upx /bin/google-analytics-proxy /bin/google-analytics-proxy
 
 ENTRYPOINT ["/bin/google-analytics-proxy"]
