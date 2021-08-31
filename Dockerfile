@@ -38,4 +38,8 @@ FROM scratch
 COPY --from=certs /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=upx /bin/google-analytics-proxy /bin/google-analytics-proxy
 
+# Switch to a non-root user. Arbitrarily, use the same uid/gid as the "nobody"
+# user from Alpine.
+USER 65534:65534
+
 ENTRYPOINT ["/bin/google-analytics-proxy"]
