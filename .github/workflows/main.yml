@@ -12,8 +12,13 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Lint commit message
+      - name: Run commitlint
         uses: wagoid/commitlint-github-action@v4
+
+      - name: Run golangci-lint
+        uses: golangci/golangci-lint-action@v2
+        with:
+          version: v1.42.0
 
   docker:
     name: Docker
