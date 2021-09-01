@@ -1,0 +1,18 @@
+linters:
+  enable-all: true
+  disable:
+    - cyclop
+    - exhaustive
+    - exhaustivestruct
+    - funlen
+    - golint
+    - interfacer
+    - lll
+    - maligned
+    - nlreturn
+    - scopelint
+    - wrapcheck
+    - wsl
+
+issues:
+  exclude-use-default: true

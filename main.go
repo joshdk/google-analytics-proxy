@@ -22,7 +22,7 @@ var version = "development"
 
 func main() {
 	if err := mainCmd(); err != nil {
-		fmt.Printf("google-analytics-proxy: %v", err)
+		fmt.Printf("google-analytics-proxy: %v", err) //nolint:forbidigo
 		os.Exit(1)
 	}
 }
@@ -33,37 +33,37 @@ func mainCmd() error {
 	// listenAddress is the host and port that the proxy will listen on.
 	// See net.Dial for details of the address format.
 	// Example: "localhost:8080" "0.0.0.0:8080" ":8080"
-	var listenAddress = os.Getenv("LISTEN")
+	listenAddress := os.Getenv("LISTEN")
 
 	// upstreamEndpoint is the address of the upstream service to be
 	// proxied.
 	// Example: "https://example.com" "http://:80"
-	var upstreamEndpoint = os.Getenv("UPSTREAM_ENDPOINT")
+	upstreamEndpoint := os.Getenv("UPSTREAM_ENDPOINT")
 
 	// upstreamHostname optionally is the hostname to used when proxying
 	// requests to the upstream. Used for hostname based routing. If empty, the
 	// value of $GOOGLE_ANALYTICS_PROPERTY_NAME will be used.
 	// Example: "example.com"
-	var upstreamHostname = os.Getenv("UPSTREAM_HOSTNAME")
+	upstreamHostname := os.Getenv("UPSTREAM_HOSTNAME")
 
 	// googleAnalyticsTrackingID is the tracking id for the Google
 	// Analytics property that you want to track pageview events for. This
 	// can be found in your Google Analytics dashboard.
 	// Example: "UA-123456789-1"
-	var googleAnalyticsTrackingID = os.Getenv("GOOGLE_ANALYTICS_TRACKING_ID")
+	googleAnalyticsTrackingID := os.Getenv("GOOGLE_ANALYTICS_TRACKING_ID")
 
 	// googleAnalyticsPropertyName is the name for the Google Analytics
 	// property that you want to track pageview events for. This can be
 	// found in your Google Analytics dashboard. Will be used as the upstream
 	// hostname in proxied requests if $UPSTREAM_HOSTNAME is empty.
 	// Example: "example.com"
-	var googleAnalyticsPropertyName = os.Getenv("GOOGLE_ANALYTICS_PROPERTY_NAME")
+	googleAnalyticsPropertyName := os.Getenv("GOOGLE_ANALYTICS_PROPERTY_NAME")
 
 	// googleAnalyticsDryRun can optionally be used to disable reporting
 	// pageview events with Google Analytics. See strconv.ParseBool() for
 	// acceptable values.
 	// Example: "true"
-	var googleAnalyticsDryRun = os.Getenv("GOOGLE_ANALYTICS_DRY_RUN")
+	googleAnalyticsDryRun := os.Getenv("GOOGLE_ANALYTICS_DRY_RUN")
 
 	// Parse the upstream endpoint address to ensure that it's valid.
 	upstreamURL, err := url.Parse(upstreamEndpoint)

@@ -5,12 +5,14 @@
 package analytics
 
 import (
+	"context"
 	"io"
 	"log"
 	"net"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
+	"time"
 )
 
 // Compile-time assertion that Tracker implements http.Handler.
@@ -58,7 +60,7 @@ func (t *Tracker) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
 		// Copy status code.
 		writer.WriteHeader(recorder.Code)
 		// Copy response body.
-		io.Copy(writer, recorder.Body)
+		_, _ = io.Copy(writer, recorder.Body)
 	}()
 
 	// Set values for the various Google Analytics request query parameters.
@@ -114,7 +116,7 @@ func (t *Tracker) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
 	// Fallback to using the IP address of the client connection itself, which
 	// may be inaccurate (or in a private address range) depending on your
 	// networking configuration.
-	//See: https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#uip
+	// See: https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#uip
 	if value := request.Header.Get("X-Forwarded-For"); value != "" {
 		params.Set("uip", value)
 	} else if value, _, err := net.SplitHostPort(request.RemoteAddr); err == nil {
@@ -190,8 +192,32 @@ func (t *Tracker) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
 	// regardless of the request. We also only log an error in order to not
 	// interrupt responses back to the client.
 	go func() {
-		if _, err := http.DefaultClient.Get(googleAnalytics.String()); err != nil {
+		if err := report(googleAnalytics.String()); err != nil {
 			log.Printf("error: %v", err)
 		}
 	}()
+}
+
+func report(url string) error {
+	// googleAnalyticsTimeout is a (rather short) timeout used when sending
+	// requests to Google Analytics.
+	const googleAnalyticsTimeout = time.Second * 5
+
+	// Create, and automatically cancel, a context using the above timeout.
+	ctx, cancel := context.WithTimeout(context.Background(), googleAnalyticsTimeout)
+	defer cancel()
+
+	request, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
+	if err != nil {
+		return err
+	}
+
+	// Send report to Google Analytics.
+	response, err := http.DefaultClient.Do(request)
+	if err != nil {
+		return err
+	}
+	_ = response.Body.Close()
+
+	return nil
 }
