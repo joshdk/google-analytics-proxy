@@ -1,0 +1,43 @@
+name: Release
+on:
+  push:
+    branches:
+      - "master"
+    tags:
+      - "v*.*.*"
+      - "v*.*.*-rc*"
+
+jobs:
+  build:
+    name: Release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Docker login
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Docker build and push
+        run: |
+          image_name=ghcr.io/joshdk/google-analytics-proxy
+          image_label="$(git describe --tags)"
+
+          docker build \
+            --build-arg CREATED="$(date -u +'%Y-%m-%dT%H:%M:%SZ')" \
+            --build-arg REVISION="$(git rev-parse HEAD)" \
+            --build-arg VERSION="$image_label" \
+            --tag "$image_name:$image_label" \
+            .
+
+          docker push "$image_name:$image_label"
