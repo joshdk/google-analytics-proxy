@@ -18,7 +18,7 @@ import (
 func getTitle(recorder *httptest.ResponseRecorder) (title string, err error) {
 	// The content type that was returned. The <title> tag can only be
 	// extracted from an HTML response body.
-	var contentType = recorder.Header().Get("Content-Type")
+	contentType := recorder.Header().Get("Content-Type")
 
 	// Only bother parsing HTML if there is HTML to parse.
 	if !strings.Contains(contentType, "text/html") {
@@ -28,7 +28,7 @@ func getTitle(recorder *httptest.ResponseRecorder) (title string, err error) {
 	// The content encoding that was returned. The response body may be be
 	// compressed, so detect the type of compression, if any, and decode the
 	// response body accordingly.
-	var contentEncoding = recorder.Header().Get("Content-Encoding")
+	contentEncoding := recorder.Header().Get("Content-Encoding")
 	var reader io.Reader = bytes.NewBuffer(recorder.Body.Bytes())
 
 	// How is the request compressed?
