@@ -11,6 +11,7 @@ import (
 	"net/http/httptest"
 	"strings"
 
+	"github.com/andybalholm/brotli"
 	"golang.org/x/net/html"
 )
 
@@ -31,11 +32,14 @@ func getTitle(recorder *httptest.ResponseRecorder) (title string, err error) {
 	var reader io.Reader = bytes.NewBuffer(recorder.Body.Bytes())
 
 	// How is the request compressed?
-	if contentEncoding == "gzip" {
+	switch contentEncoding {
+	case "gzip":
 		reader, err = gzip.NewReader(reader)
 		if err != nil {
 			return
 		}
+	case "br":
+		reader = brotli.NewReader(reader)
 	}
 
 	// Extract title from the (now decoded) response body.
