@@ -189,7 +189,9 @@ func (t *Tracker) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
 	// response as the endpoint always returns a successful (200) response,
 	// regardless of the request. We also only log an error in order to not
 	// interrupt responses back to the client.
-	if _, err := http.DefaultClient.Get(googleAnalytics.String()); err != nil {
-		log.Printf("error: %v", err)
-	}
+	go func() {
+		if _, err := http.DefaultClient.Get(googleAnalytics.String()); err != nil {
+			log.Printf("error: %v", err)
+		}
+	}()
 }
