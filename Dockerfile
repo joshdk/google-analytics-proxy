@@ -52,7 +52,7 @@ LABEL org.opencontainers.image.vendor="Josh Komoroske <github.com/joshdk>"
 LABEL org.opencontainers.image.licenses="MIT"
 LABEL org.opencontainers.image.ref.name="ghcr.io/joshdk/google-analytics-proxy:$VERSION"
 LABEL org.opencontainers.image.title="Google Analytics Proxy"
-LABEL org.opencontainers.image.description="📊 Transparent proxy for tracking page views with Google Analytics"
+LABEL org.opencontainers.image.description="Transparent HTTP proxy for tracking pageviews with Google Analytics"
 
 COPY --from=certs /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=upx /bin/google-analytics-proxy /bin/google-analytics-proxy
