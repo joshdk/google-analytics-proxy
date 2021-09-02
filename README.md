@@ -6,7 +6,40 @@
 
 # Google Analytics Proxy
 
-📊 Transparent proxy for tracking page views with Google Analytics
+📈 Transparent HTTP proxy for tracking pageviews with Google Analytics
+
+## Motivations
+
+There are a number of situations where it is difficult (or impossible) to utilize the traditional Google Analytics tracking scripts.
+
+- Server-side problems
+    - What if the page is dynamically generated, or the contents isn't under your direct control?
+    - What if the page return an HTTP redirect?
+    - What if the page returns non-HTML content?
+- Client-side problems:
+    - What if the browser blocks Google Analytics?
+    - What if the browser has JavaScript disabled?
+    - What if the browser doesn't even use JavaScript (like `curl`)?
+
+This application is an option to solve all of these problems.
+
+## What this application is not
+
+- A proxy for `https://www.google-analytics.com/collect`.
+- A proxy for serving `analytics.js`.
+- A JavaScript library.
+
+## How it works
+
+This application is an HTTP proxy server; It listens for a client HTTP request, forwards the request to an upstream HTTP server, waits for a response from the upstream server, and finally returns that response back to the original client.
+
+From the client's perspective everything is functioning identically to if they were connecting to the upstream directly, but all of their traffic is actually being transparently proxied.
+
+While this is happening, each request and response is used to construct a pageview event, that is then reported to Google Analytics.
+
+Since there is no JavaScript whatsoever, it is not possible to disable Google Analytics reporting. 🚫
+
+Additionally, the upstream HTTP service doesn't need to integrate with (or have any knowledge of) Google Analytics.
 
 ## Installing
 
