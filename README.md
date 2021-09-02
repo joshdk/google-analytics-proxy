@@ -1,4 +1,4 @@
-![Google Analytics Proxy](https://user-images.githubusercontent.com/307183/131599246-f0516c3b-2f91-43ab-9db9-52e5180c59ad.png)
+[![Google Analytics Proxy][banner-image-link]][github-repo-link]
 
 [![Actions][github-actions-badge]][github-actions-link]
 [![License][license-badge]][license-link]
@@ -68,11 +68,13 @@ Browsing to [https://localhost:8080](https://localhost:8080) afterwards will dis
 
 This code is distributed under the [MIT License][license-link], see [LICENSE.txt][license-file] for more information.
 
+[banner-image-link]:     https://user-images.githubusercontent.com/307183/131765571-5303a7f6-42c0-4764-ab5f-0b96ede2fda1.png
 [github-actions-badge]:  https://github.com/joshdk/google-analytics-proxy/workflows/Build/badge.svg
 [github-actions-link]:   https://github.com/joshdk/google-analytics-proxy/actions
 [github-master-link]:    https://github.com/joshdk/google-analytics-proxy/tree/master
 [github-release-badge]:  https://img.shields.io/github/release/joshdk/google-analytics-proxy/all.svg
 [github-release-link]:   https://github.com/joshdk/google-analytics-proxy/releases
+[github-repo-link]:      https://github.com/joshdk/google-analytics-proxy
 [license-badge]:         https://img.shields.io/badge/license-MIT-green.svg
 [license-file]:          https://github.com/joshdk/google-analytics-proxy/blob/master/LICENSE.txt
 [license-link]:          https://opensource.org/licenses/MIT
