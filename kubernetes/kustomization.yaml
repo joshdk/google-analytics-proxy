@@ -1,0 +1,18 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+- ./deployment.yaml # Contains values that must be replaced.
+- ./service.yaml
+
+images:
+- name: google-analytics-proxy
+  newName: ghcr.io/joshdk/google-analytics-proxy
+  newTag: v0.1.0
+- name: upstream
+  newName: docker.io/nginxdemos/hello
+  newTag: latest
+
+replicas:
+- name: demo
+  count: 2

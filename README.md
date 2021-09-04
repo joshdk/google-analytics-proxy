@@ -95,7 +95,22 @@ GOOGLE_ANALYTICS_TRACKING_ID=UA-123456789-1 \
   $GOPATH/bin/google-analytics-proxy
 ```
 
-Browsing to [https://localhost:8080](https://localhost:8080) afterwards will display the proxied upstream.
+### Kubernetes
+
+This application is designed to be deployed into a Kubernetes cluster, ideally as a side-car container inside the same pod as your existing web service.
+While not the only configuration option, this technique is beneficial because it enables you to:
+
+- Proxy your service with minimal networking overhead.
+- Scale along with your service.
+- Be configured in the same deployment spec as your service.
+
+As a demo, there is a [kubernetes][kubernetes-demo-link] directory, containing a [kustomize](https://kustomize.io/) manifest which can be deployed with `kubectl apply -k ./kubernetes`.
+Afterwards, you must run `kubectl port-forward svc/demo 8080:8080` in order to expose the service locally.
+
+---
+
+In all cases, browsing to [https://localhost:8080](https://localhost:8080) afterwards will display the proxied upstream.
+Realtime pageviews should also appear in your Google Analytics dashboard.
 
 ## License
 
@@ -108,6 +123,7 @@ This code is distributed under the [MIT License][license-link], see [LICENSE.txt
 [github-release-badge]:  https://img.shields.io/github/release/joshdk/google-analytics-proxy/all.svg
 [github-release-link]:   https://github.com/joshdk/google-analytics-proxy/releases
 [github-repo-link]:      https://github.com/joshdk/google-analytics-proxy
+[kubernetes-demo-link]:  https://github.com/joshdk/google-analytics-proxy/tree/master/kubernetes
 [license-badge]:         https://img.shields.io/badge/license-MIT-green.svg
 [license-file]:          https://github.com/joshdk/google-analytics-proxy/blob/master/LICENSE.txt
 [license-link]:          https://opensource.org/licenses/MIT
