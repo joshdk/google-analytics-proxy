@@ -13,13 +13,13 @@
 There are a number of situations where it is difficult (or impossible) to utilize the traditional Google Analytics tracking scripts.
 
 - Server-side problems
-    - What if the page is dynamically generated, or the contents isn't under your direct control?
-    - What if the page return an HTTP redirect?
-    - What if the page returns non-HTML content?
+  - What if the page is dynamically generated, or the contents isn't under your direct control?
+  - What if the page return an HTTP redirect?
+  - What if the page returns non-HTML content?
 - Client-side problems:
-    - What if the browser blocks Google Analytics?
-    - What if the browser has JavaScript disabled?
-    - What if the browser doesn't even use JavaScript (like `curl`)?
+  - What if the browser blocks Google Analytics?
+  - What if the browser has JavaScript disabled?
+  - What if the browser doesn't even use JavaScript (like `curl`)?
 
 This application is an option to solve all of these problems.
 
@@ -62,6 +62,8 @@ This tool uses several environment variables as configuration.
 | Name                              | Purpose                                                             | Example               |
 | --------------------------------- | ------------------------------------------------------------------- | --------------------- |
 | `$LISTEN`                         | Host and port that the proxy will listen on.                        | `0.0.0.0:8080`        |
+| `$TLS_CERT_PATH`                  | (Optional) Path to TLS certificate file.                            | `/path/to/tls.pem`    |
+| `$TLS_KEY_PATH`                   | (Optional) Path to TLS private key file.                            | `/path/to/tls.key`    |
 | `$UPSTREAM_ENDPOINT`              | Address of the upstream service to be proxied.                      | `https://example.com` |
 | `$UPSTREAM_HOSTNAME`              | (Optional) Hostname to used when proxying requests to the upstream. | `example.com`         |
 | `$GOOGLE_ANALYTICS_TRACKING_ID`   | Tracking ID for your Google Analytics property                      | `UA-123456789-1`      |
