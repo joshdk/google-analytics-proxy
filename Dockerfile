@@ -63,4 +63,7 @@ COPY README.md /README.md
 # user from Alpine.
 USER 65534:65534
 
+EXPOSE 8080/tcp
+EXPOSE 8443/tcp
+
 ENTRYPOINT ["/bin/google-analytics-proxy"]
