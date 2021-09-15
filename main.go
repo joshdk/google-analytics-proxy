@@ -35,6 +35,18 @@ func mainCmd() error {
 	// Example: "localhost:8080" "0.0.0.0:8080" ":8080"
 	listenAddress := os.Getenv("LISTEN")
 
+	// tlsCertFile is optionally the path to a TLS certificate file, used for
+	// listening and serving HTTPS connections. Must always be configured with
+	// tlsKeyFile.
+	// Example: "/path/to/tls.pem"
+	tlsCertFile := os.Getenv("TLS_CERT_PATH")
+
+	// tlsKeyFile is optionally the path to a TLS private key file, used for
+	// listening and serving HTTPS connections. Must always be configured with
+	// tlsCertFile.
+	// Example: "/path/to/tls.key"
+	tlsKeyFile := os.Getenv("TLS_KEY_PATH")
+
 	// upstreamEndpoint is the address of the upstream service to be
 	// proxied.
 	// Example: "https://example.com" "http://:80"
@@ -105,6 +117,10 @@ func mainCmd() error {
 	}
 
 	// Start the server and listen for incoming requests!
-	log.Printf("listening on %s", listenAddress)
+	if tlsCertFile != "" && tlsKeyFile != "" {
+		log.Printf("serving HTTPS on %s", listenAddress)
+		return http.ListenAndServeTLS(listenAddress, tlsCertFile, tlsKeyFile, tracker)
+	}
+	log.Printf("serving HTTP on %s", listenAddress)
 	return http.ListenAndServe(listenAddress, tracker)
 }
