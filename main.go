@@ -22,7 +22,7 @@ var version = "development"
 
 func main() {
 	if err := mainCmd(); err != nil {
-		fmt.Printf("google-analytics-proxy: %v", err) //nolint:forbidigo
+		fmt.Println("joshdk/google-analytics-proxy:", err) //nolint:forbidigo
 		os.Exit(1)
 	}
 }
@@ -77,10 +77,45 @@ func mainCmd() error {
 	// Example: "true"
 	googleAnalyticsDryRun := os.Getenv("GOOGLE_ANALYTICS_DRY_RUN")
 
+	// Validate that the required settings are not empty.
+	switch {
+	case googleAnalyticsTrackingID == "":
+		return fmt.Errorf("GOOGLE_ANALYTICS_TRACKING_ID was not provided")
+	case googleAnalyticsPropertyName == "":
+		return fmt.Errorf("GOOGLE_ANALYTICS_PROPERTY_NAME was not provided")
+	case upstreamEndpoint == "":
+		return fmt.Errorf("UPSTREAM_ENDPOINT was not provided")
+	}
+
+	// Validate the TLS settings, and set sane defaults.
+	switch {
+	// Validate HTTP listen mode.
+	case tlsCertFile == "" && tlsKeyFile == "":
+		if listenAddress == "" {
+			// Set a default listen address if none was given.
+			listenAddress = "0.0.0.0:8080"
+		}
+	// Validate HTTPS listen mode.
+	case tlsCertFile != "" && tlsKeyFile != "":
+		if listenAddress == "" {
+			// Set a default listen address if none was given.
+			listenAddress = "0.0.0.0:8443"
+		}
+	default:
+		// HTTPS listen mode was only partially (mis)configured.
+		return fmt.Errorf("TLS_CERT_PATH and TLS_KEY_PATH were not both provided")
+	}
+
 	// Parse the upstream endpoint address to ensure that it's valid.
 	upstreamURL, err := url.Parse(upstreamEndpoint)
 	if err != nil {
 		return err
+	}
+
+	// Use the property name for the upstream hostname, if one was not
+	// explicitly given.
+	if upstreamHostname == "" {
+		upstreamHostname = googleAnalyticsPropertyName
 	}
 
 	// Create a reverse proxy HTTP handler for our upstream. This handler is
