@@ -5,6 +5,7 @@ linters:
     - exhaustive
     - exhaustivestruct
     - funlen
+    - goerr113
     - golint
     - interfacer
     - lll
