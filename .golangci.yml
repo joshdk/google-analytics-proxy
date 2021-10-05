@@ -16,4 +16,4 @@ linters:
     - wsl
 
 issues:
-  exclude-use-default: true
+  exclude-use-default: false

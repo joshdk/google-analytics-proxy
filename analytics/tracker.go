@@ -2,6 +2,8 @@
 // Use of this source code is governed by the MIT license,
 // a copy of which can be found in the LICENSE.txt file.
 
+// Package analytics provides functionality for interacting with the Google
+// Analytics API.
 package analytics
 
 import (
@@ -18,6 +20,10 @@ import (
 // Compile-time assertion that Tracker implements http.Handler.
 var _ http.Handler = (*Tracker)(nil)
 
+// Tracker implements a custom http.Handler that wraps another http.Handler.
+// When a request is handled by a Tracker, the wrapped http.Handler will be
+// executed, and information about the request and response will be used to
+// register a pageview event using the Google Analytics API.
 type Tracker struct {
 	// TrackingID is the tracking id for the Google Analytics property that you
 	// want to track pageview events for. This value can be found in your
