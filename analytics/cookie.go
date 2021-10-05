@@ -6,11 +6,12 @@ package analytics
 
 import (
 	"net/http"
+	"time"
 
 	"github.com/gofrs/uuid"
 )
 
-const twoYearsInSeconds = 63072000
+const twoYears = time.Hour * 24 * 365 * 2
 
 func getCookie(request *http.Request, name string) (string, *http.Cookie) {
 	// Check if the named cookie was provided along with the request and return
@@ -29,7 +30,7 @@ func getCookie(request *http.Request, name string) (string, *http.Cookie) {
 
 		// Set the cookie expiration to two years (in seconds).
 		// See: https://developers.google.com/analytics/devguides/collection/analyticsjs/cookies-user-id#configuring_cookie_field_settings
-		MaxAge: twoYearsInSeconds,
+		MaxAge: int(twoYears.Seconds()),
 	}
 
 	return cookie.Value, cookie
