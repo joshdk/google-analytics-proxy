@@ -18,6 +18,10 @@ import (
 	"time"
 )
 
+// HeaderTitle is an HTTP header that can be returned by an upstream server to
+// manually set the "Document Title" value.
+const HeaderTitle = "X-Gap-Title"
+
 // HeaderUTMCampaign is an HTTP header that can be returned by an upstream
 // server to manually set the "Campaign Name" value.
 const HeaderUTMCampaign = "X-Gap-Utm-Campaign"
@@ -221,7 +225,9 @@ func (t *Tracker) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
 
 	// Set the "Document Title" value.
 	// See: https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#dt
-	if value, _ := getTitle(recorder); value != "" {
+	if value := recorder.Header().Get(HeaderTitle); value != "" {
+		params.Set("dt", value)
+	} else if value, _ := getTitle(recorder); value != "" {
 		params.Set("dt", value)
 	}
 
