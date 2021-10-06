@@ -1,7 +1,10 @@
 [![Google Analytics Proxy][banner-image-link]][github-repo-link]
 
-[![Actions][github-actions-badge]][github-actions-link]
 [![License][license-badge]][license-link]
+[![Go Reference][godoc-badge]][godoc-link]
+[![Go Report Card][goreportcard-badge]][goreportcard-link]
+[![Actions][github-actions-badge]][github-actions-link]
+[![Packages][github-packages-badge]][github-packages-link]
 [![Releases][github-release-badge]][github-release-link]
 
 # Google Analytics Proxy
@@ -118,14 +121,20 @@ Realtime pageviews should also appear in your Google Analytics dashboard.
 
 This code is distributed under the [MIT License][license-link], see [LICENSE.txt][license-file] for more information.
 
-[banner-image-link]:     https://user-images.githubusercontent.com/307183/131765571-5303a7f6-42c0-4764-ab5f-0b96ede2fda1.png
-[github-actions-badge]:  https://github.com/joshdk/google-analytics-proxy/workflows/Build/badge.svg
-[github-actions-link]:   https://github.com/joshdk/google-analytics-proxy/actions
-[github-master-link]:    https://github.com/joshdk/google-analytics-proxy/tree/master
-[github-release-badge]:  https://img.shields.io/github/release/joshdk/google-analytics-proxy/all.svg
-[github-release-link]:   https://github.com/joshdk/google-analytics-proxy/releases
-[github-repo-link]:      https://github.com/joshdk/google-analytics-proxy
-[kubernetes-demo-link]:  https://github.com/joshdk/google-analytics-proxy/tree/master/kubernetes
-[license-badge]:         https://img.shields.io/badge/license-MIT-green.svg
-[license-file]:          https://github.com/joshdk/google-analytics-proxy/blob/master/LICENSE.txt
-[license-link]:          https://opensource.org/licenses/MIT
+[banner-image-link]:      https://user-images.githubusercontent.com/307183/131765571-5303a7f6-42c0-4764-ab5f-0b96ede2fda1.png
+[github-actions-badge]:   https://github.com/joshdk/google-analytics-proxy/workflows/Build/badge.svg
+[github-actions-link]:    https://github.com/joshdk/google-analytics-proxy/actions
+[github-master-link]:     https://github.com/joshdk/google-analytics-proxy/tree/master
+[github-packages-badge]:  https://img.shields.io/badge/ghcr.io-images-blue.svg
+[github-packages-link]:   https://github.com/joshdk/google-analytics-proxy/pkgs/container/google-analytics-proxy
+[github-release-badge]:   https://img.shields.io/github/release/joshdk/google-analytics-proxy/all.svg
+[github-release-link]:    https://github.com/joshdk/google-analytics-proxy/releases
+[github-repo-link]:       https://github.com/joshdk/google-analytics-proxy
+[godoc-badge]:            https://pkg.go.dev/badge/github.com/joshdk/google-analytics-proxy.svg
+[godoc-link]:             https://pkg.go.dev/github.com/joshdk/google-analytics-proxy
+[goreportcard-badge]:     https://goreportcard.com/badge/github.com/joshdk/google-analytics-proxy
+[goreportcard-link]:      https://goreportcard.com/report/github.com/joshdk/google-analytics-proxy
+[kubernetes-demo-link]:   https://github.com/joshdk/google-analytics-proxy/tree/master/kubernetes
+[license-badge]:          https://img.shields.io/badge/license-MIT-green.svg
+[license-file]:           https://github.com/joshdk/google-analytics-proxy/blob/master/LICENSE.txt
+[license-link]:           https://opensource.org/licenses/MIT
