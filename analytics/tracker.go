@@ -18,6 +18,26 @@ import (
 	"time"
 )
 
+// HeaderUTMCampaign is an HTTP header that can be returned by an upstream
+// server to manually set the "Campaign Name" value.
+const HeaderUTMCampaign = "X-Gap-Utm-Campaign"
+
+// HeaderUTMContent is an HTTP header that can be returned by an upstream
+// server to manually set the "Campaign Content" value.
+const HeaderUTMContent = "X-Gap-Utm-Content"
+
+// HeaderUTMMedium is an HTTP header that can be returned by an upstream server
+// to manually set the "Campaign Medium" value.
+const HeaderUTMMedium = "X-Gap-Utm-Medium"
+
+// HeaderUTMSource is an HTTP header that can be returned by an upstream server
+// to manually set the "Campaign Source" value.
+const HeaderUTMSource = "X-Gap-Utm-Source"
+
+// HeaderUTMTerm is an HTTP header that can be returned by an upstream server
+// to manually set the "Campaign Keyword" value.
+const HeaderUTMTerm = "X-Gap-Utm-Term"
+
 // Compile-time assertion that Tracker implements http.Handler.
 var _ http.Handler = (*Tracker)(nil)
 
@@ -116,7 +136,7 @@ func (t *Tracker) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
 	// See: https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#cid
 	// Additionally, persist the returned cookie back to the client so that it
 	// will be passed back during subsequent requests.
-	if value, cookie := getCookie(request, "_gap"); cookie == nil {
+	if value, cookie := getCookie(request); cookie == nil {
 		params.Set("cid", value)
 	} else {
 		params.Set("cid", value)
@@ -143,7 +163,7 @@ func (t *Tracker) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
 
 	// Set the "Campaign Name" value.
 	// See: https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#cn
-	if value := recorder.Header().Get("X-Gap-Utm-Campaign"); value != "" {
+	if value := recorder.Header().Get(HeaderUTMCampaign); value != "" {
 		params.Set("cn", value)
 	} else if value := request.URL.Query().Get("utm_campaign"); value != "" {
 		params.Set("cn", value)
@@ -151,7 +171,7 @@ func (t *Tracker) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
 
 	// Set the "Campaign Source" value.
 	// See: https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#cs
-	if value := recorder.Header().Get("X-Gap-Utm-Source"); value != "" {
+	if value := recorder.Header().Get(HeaderUTMSource); value != "" {
 		params.Set("cs", value)
 	} else if value := request.URL.Query().Get("utm_source"); value != "" {
 		params.Set("cs", value)
@@ -159,7 +179,7 @@ func (t *Tracker) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
 
 	// Set the "Campaign Medium" value.
 	// See: https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#cm
-	if value := recorder.Header().Get("X-Gap-Utm-Medium"); value != "" {
+	if value := recorder.Header().Get(HeaderUTMMedium); value != "" {
 		params.Set("cm", value)
 	} else if value := request.URL.Query().Get("utm_medium"); value != "" {
 		params.Set("cm", value)
@@ -167,7 +187,7 @@ func (t *Tracker) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
 
 	// Set the "Campaign Keyword" value.
 	// See: https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#ck
-	if value := recorder.Header().Get("X-Gap-Utm-Term"); value != "" {
+	if value := recorder.Header().Get(HeaderUTMTerm); value != "" {
 		params.Set("ck", value)
 	} else if value := request.URL.Query().Get("utm_term"); value != "" {
 		params.Set("ck", value)
@@ -175,7 +195,7 @@ func (t *Tracker) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
 
 	// Set the "Campaign Content" value.
 	// See: https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#cc
-	if value := recorder.Header().Get("X-Gap-Utm-Content"); value != "" {
+	if value := recorder.Header().Get(HeaderUTMContent); value != "" {
 		params.Set("cc", value)
 	} else if value := request.URL.Query().Get("utm_content"); value != "" {
 		params.Set("cc", value)
