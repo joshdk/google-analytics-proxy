@@ -163,41 +163,41 @@ func (t *Tracker) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
 
 	// Set the "Campaign Name" value.
 	// See: https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#cn
-	if value := recorder.Header().Get(HeaderUTMCampaign); value != "" {
+	if value := request.URL.Query().Get("utm_campaign"); value != "" {
 		params.Set("cn", value)
-	} else if value := request.URL.Query().Get("utm_campaign"); value != "" {
+	} else if value := recorder.Header().Get(HeaderUTMCampaign); value != "" {
 		params.Set("cn", value)
 	}
 
 	// Set the "Campaign Source" value.
 	// See: https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#cs
-	if value := recorder.Header().Get(HeaderUTMSource); value != "" {
+	if value := request.URL.Query().Get("utm_source"); value != "" {
 		params.Set("cs", value)
-	} else if value := request.URL.Query().Get("utm_source"); value != "" {
+	} else if value := recorder.Header().Get(HeaderUTMSource); value != "" {
 		params.Set("cs", value)
 	}
 
 	// Set the "Campaign Medium" value.
 	// See: https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#cm
-	if value := recorder.Header().Get(HeaderUTMMedium); value != "" {
+	if value := request.URL.Query().Get("utm_medium"); value != "" {
 		params.Set("cm", value)
-	} else if value := request.URL.Query().Get("utm_medium"); value != "" {
+	} else if value := recorder.Header().Get(HeaderUTMMedium); value != "" {
 		params.Set("cm", value)
 	}
 
 	// Set the "Campaign Keyword" value.
 	// See: https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#ck
-	if value := recorder.Header().Get(HeaderUTMTerm); value != "" {
+	if value := request.URL.Query().Get("utm_term"); value != "" {
 		params.Set("ck", value)
-	} else if value := request.URL.Query().Get("utm_term"); value != "" {
+	} else if value := recorder.Header().Get(HeaderUTMTerm); value != "" {
 		params.Set("ck", value)
 	}
 
 	// Set the "Campaign Content" value.
 	// See: https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#cc
-	if value := recorder.Header().Get(HeaderUTMContent); value != "" {
+	if value := request.URL.Query().Get("utm_content"); value != "" {
 		params.Set("cc", value)
-	} else if value := request.URL.Query().Get("utm_content"); value != "" {
+	} else if value := recorder.Header().Get(HeaderUTMContent); value != "" {
 		params.Set("cc", value)
 	}
 
