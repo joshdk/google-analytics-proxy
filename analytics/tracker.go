@@ -14,6 +14,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"net/url"
+	"strings"
 	"time"
 )
 
@@ -60,6 +61,11 @@ func (t *Tracker) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
 		// Copy all headers.
 		for key, values := range recorder.Header() {
 			for _, value := range values {
+				// Don't return any headers that start with "X-Gap-" back to
+				// the client.
+				if strings.HasPrefix(key, "X-Gap-") {
+					continue
+				}
 				writer.Header().Add(key, value)
 			}
 		}
@@ -137,31 +143,41 @@ func (t *Tracker) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
 
 	// Set the "Campaign Name" value.
 	// See: https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#cn
-	if value := request.URL.Query().Get("utm_campaign"); value != "" {
+	if value := recorder.Header().Get("X-Gap-Utm-Campaign"); value != "" {
+		params.Set("cn", value)
+	} else if value := request.URL.Query().Get("utm_campaign"); value != "" {
 		params.Set("cn", value)
 	}
 
 	// Set the "Campaign Source" value.
 	// See: https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#cs
-	if value := request.URL.Query().Get("utm_source"); value != "" {
+	if value := recorder.Header().Get("X-Gap-Utm-Source"); value != "" {
+		params.Set("cs", value)
+	} else if value := request.URL.Query().Get("utm_source"); value != "" {
 		params.Set("cs", value)
 	}
 
 	// Set the "Campaign Medium" value.
 	// See: https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#cm
-	if value := request.URL.Query().Get("utm_medium"); value != "" {
+	if value := recorder.Header().Get("X-Gap-Utm-Medium"); value != "" {
+		params.Set("cm", value)
+	} else if value := request.URL.Query().Get("utm_medium"); value != "" {
 		params.Set("cm", value)
 	}
 
 	// Set the "Campaign Keyword" value.
 	// See: https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#ck
-	if value := request.URL.Query().Get("utm_term"); value != "" {
+	if value := recorder.Header().Get("X-Gap-Utm-Term"); value != "" {
+		params.Set("ck", value)
+	} else if value := request.URL.Query().Get("utm_term"); value != "" {
 		params.Set("ck", value)
 	}
 
 	// Set the "Campaign Content" value.
 	// See: https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#cc
-	if value := request.URL.Query().Get("utm_content"); value != "" {
+	if value := recorder.Header().Get("X-Gap-Utm-Content"); value != "" {
+		params.Set("cc", value)
+	} else if value := request.URL.Query().Get("utm_content"); value != "" {
 		params.Set("cc", value)
 	}
 
