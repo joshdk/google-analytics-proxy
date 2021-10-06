@@ -31,6 +31,10 @@ spec:
               value: example.com # Value must be replaced.
           ports:
             - containerPort: 8080
+          resources:
+            requests:
+              cpu: 100m
+              memory: 20Mi
           securityContext:
             allowPrivilegeEscalation: false
             capabilities:
