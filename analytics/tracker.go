@@ -26,6 +26,10 @@ const HeaderUTMCampaign = "X-Gap-Utm-Campaign"
 // server to manually set the "Campaign Content" value.
 const HeaderUTMContent = "X-Gap-Utm-Content"
 
+// HeaderUTMID is an HTTP header that can be returned by an upstream server to
+// manually set the "Campaign ID" value.
+const HeaderUTMID = "X-Gap-Utm-ID"
+
 // HeaderUTMMedium is an HTTP header that can be returned by an upstream server
 // to manually set the "Campaign Medium" value.
 const HeaderUTMMedium = "X-Gap-Utm-Medium"
@@ -67,7 +71,7 @@ type Tracker struct {
 	Handler http.Handler
 }
 
-func (t *Tracker) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
+func (t *Tracker) ServeHTTP(writer http.ResponseWriter, request *http.Request) { // nolint:gocognit
 	// We're going to be leveraging the httptest.ResponseRecorder so that the
 	// responses from the wrapped handler can be extracted and copied.
 	recorder := httptest.NewRecorder()
@@ -199,6 +203,14 @@ func (t *Tracker) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
 		params.Set("cc", value)
 	} else if value := recorder.Header().Get(HeaderUTMContent); value != "" {
 		params.Set("cc", value)
+	}
+
+	// Set the "Campaign ID" value.
+	// See: https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#ci
+	if value := request.URL.Query().Get("utm_id"); value != "" {
+		params.Set("ci", value)
+	} else if value := recorder.Header().Get(HeaderUTMID); value != "" {
+		params.Set("ci", value)
 	}
 
 	// Set the "User Language" value.
