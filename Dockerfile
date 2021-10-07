@@ -39,6 +39,8 @@ ARG CREATED
 ARG REVISION
 ARG VERSION
 
+MAINTAINER Josh Komoroske <github.com/joshdk>
+
 # Standard OCI image labels.
 # See: https://github.com/opencontainers/image-spec/blob/v1.0.1/annotations.md#pre-defined-annotation-keys
 LABEL org.opencontainers.image.created="$CREATED"
