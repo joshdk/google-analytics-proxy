@@ -1,3 +1,8 @@
+# Copyright Josh Komoroske. All rights reserved.
+# Use of this source code is governed by the MIT license,
+# a copy of which can be found in the LICENSE.txt file.
+# SPDX-License-Identifier: MIT
+
 # The certs stage is used to obtain a current set of CA certificates.
 FROM alpine:3.14 as certs
 
