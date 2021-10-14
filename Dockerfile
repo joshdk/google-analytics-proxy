@@ -56,10 +56,10 @@ LABEL org.opencontainers.image.ref.name="ghcr.io/joshdk/google-analytics-proxy:$
 LABEL org.opencontainers.image.title="Google Analytics Proxy"
 LABEL org.opencontainers.image.description="Transparent HTTP proxy for tracking pageviews with Google Analytics"
 
+COPY LICENSE.txt /
 COPY --from=certs /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+COPY README.md /
 COPY --from=upx /bin/google-analytics-proxy /bin/google-analytics-proxy
-COPY LICENSE.txt /LICENSE.txt
-COPY README.md /README.md
 
 # Switch to a non-root user. Arbitrarily, use the same uid/gid as the "nobody"
 # user from Alpine.
